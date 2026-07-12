@@ -73,7 +73,7 @@ export default function BookingListPage() {
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <h1 className="font-display text-3xl font-bold text-ink uppercase tracking-wide">Resource Bookings</h1>
+        <h1 className="font-display text-3xl font-bold text-gray-800 uppercase tracking-wide">Resource Bookings</h1>
         <button
           onClick={() => navigate('/bookings/new')}
           className="inline-flex items-center gap-2 bg-signal hover:bg-signal-700 text-white px-4 py-2.5 rounded-lg font-medium text-sm transition-colors"

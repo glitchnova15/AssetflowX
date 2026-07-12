@@ -123,8 +123,8 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-8">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Welcome back, {user?.displayName}</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
+        <h1 className="text-2xl font-bold text-gray-800">Welcome back, {user?.displayName}</h1>
+        <p className="text-sm text-gray-600">
           {isAdminOrManager ? 'Here is the global overview of your organization\'s assets.' : 'Here is the overview of your requested resources.'}
         </p>
       </div>

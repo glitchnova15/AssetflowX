@@ -109,8 +109,8 @@ export default function ReportsPage() {
     <div className="space-y-6 max-w-7xl mx-auto pb-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Analytics & Reports</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <h1 className="text-2xl font-bold text-gray-800">Analytics & Reports</h1>
+          <p className="text-sm text-gray-600">
             {isAdminOrManager ? 'Comprehensive global breakdown of organizational assets and operations.' : 'Summary of your requested resources and tickets.'}
           </p>
         </div>
