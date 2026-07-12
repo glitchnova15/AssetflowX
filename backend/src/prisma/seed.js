@@ -6,6 +6,8 @@ const ids = Object.freeze({
   adminRole: '00000000-0000-4000-8000-000000000001',
   employeeRole: '00000000-0000-4000-8000-000000000002',
   auditorRole: '00000000-0000-4000-8000-000000000003',
+  assetManagerRole: '00000000-0000-4000-8000-000000000004',
+  departmentHeadRole: '00000000-0000-4000-8000-000000000005',
   adminUser: '00000000-0000-4000-8000-000000000011',
   employeeUser: '00000000-0000-4000-8000-000000000012',
   auditorUser: '00000000-0000-4000-8000-000000000013',
@@ -38,9 +40,13 @@ const upsertById = (delegate, record) =>
   delegate.upsert({ where: { id: record.id }, update: record, create: record })
 
 async function main() {
-  await upsertById(prisma.role, { id: ids.adminRole, code: 'ADMIN', name: 'Administrator', description: 'System administrator' })
-  await upsertById(prisma.role, { id: ids.employeeRole, code: 'EMPLOYEE', name: 'Employee', description: 'Standard employee' })
-  await upsertById(prisma.role, { id: ids.auditorRole, code: 'AUDITOR', name: 'Auditor', description: 'Asset audit operator' })
+  const roles = {
+    admin: await prisma.role.upsert({ where: { code: 'ADMIN' }, update: { name: 'Administrator', description: 'System administrator' }, create: { id: ids.adminRole, code: 'ADMIN', name: 'Administrator', description: 'System administrator' } }),
+    employee: await prisma.role.upsert({ where: { code: 'EMPLOYEE' }, update: { name: 'Employee', description: 'Standard employee' }, create: { id: ids.employeeRole, code: 'EMPLOYEE', name: 'Employee', description: 'Standard employee' } }),
+    auditor: await prisma.role.upsert({ where: { code: 'AUDITOR' }, update: { name: 'Auditor', description: 'Asset audit operator' }, create: { id: ids.auditorRole, code: 'AUDITOR', name: 'Auditor', description: 'Asset audit operator' } }),
+    assetManager: await prisma.role.upsert({ where: { code: 'ASSET_MANAGER' }, update: { name: 'Asset Manager', description: 'Asset operations manager' }, create: { id: ids.assetManagerRole, code: 'ASSET_MANAGER', name: 'Asset Manager', description: 'Asset operations manager' } }),
+    departmentHead: await prisma.role.upsert({ where: { code: 'DEPARTMENT_HEAD' }, update: { name: 'Department Head', description: 'Department approver' }, create: { id: ids.departmentHeadRole, code: 'DEPARTMENT_HEAD', name: 'Department Head', description: 'Department approver' } }),
+  }
 
   await upsertById(prisma.user, { id: ids.adminUser, authSubject: 'demo-admin', email: 'admin@assetflow.demo', displayName: 'Avery Admin', status: 'ACTIVE' })
   await upsertById(prisma.user, { id: ids.employeeUser, authSubject: 'demo-employee', email: 'alex@assetflow.demo', displayName: 'Alex Employee', status: 'ACTIVE' })
@@ -54,9 +60,9 @@ async function main() {
   await upsertById(prisma.employee, { id: ids.auditorEmployee, userId: ids.auditorUser, employeeNumber: 'EMP-003', firstName: 'Aria', lastName: 'Auditor', jobTitle: 'Asset Auditor', departmentId: ids.itDepartment, managerId: ids.adminEmployee, employmentStatus: 'ACTIVE', startedAt: new Date('2025-03-01') })
   await prisma.department.update({ where: { id: ids.itDepartment }, data: { managerId: ids.adminEmployee } })
 
-  await upsertById(prisma.userRole, { id: ids.adminRoleLink, userId: ids.adminUser, roleId: ids.adminRole })
-  await upsertById(prisma.userRole, { id: ids.employeeRoleLink, userId: ids.employeeUser, roleId: ids.employeeRole })
-  await upsertById(prisma.userRole, { id: ids.auditorRoleLink, userId: ids.auditorUser, roleId: ids.auditorRole })
+  await upsertById(prisma.userRole, { id: ids.adminRoleLink, userId: ids.adminUser, roleId: roles.admin.id })
+  await upsertById(prisma.userRole, { id: ids.employeeRoleLink, userId: ids.employeeUser, roleId: roles.employee.id })
+  await upsertById(prisma.userRole, { id: ids.auditorRoleLink, userId: ids.auditorUser, roleId: roles.auditor.id })
 
   await upsertById(prisma.assetCategory, { id: ids.computerCategory, code: 'COMPUTER', name: 'Computers', description: 'Computing equipment', parentId: null })
   await upsertById(prisma.assetCategory, { id: ids.laptopCategory, code: 'LAPTOP', name: 'Laptops', description: 'Portable computers', parentId: ids.computerCategory })

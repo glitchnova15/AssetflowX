@@ -128,6 +128,7 @@ enum NotificationStatus {
 model User {
   id                 String              @id @default(uuid()) @db.Uuid
   authSubject        String?             @unique
+  passwordHash       String?
   email              String              @unique @db.VarChar(320)
   displayName        String?             @db.VarChar(160)
   status             UserStatus          @default(ACTIVE)
@@ -146,6 +147,7 @@ model User {
   auditCyclesCreated AuditCycle[]        @relation("AuditCycleCreatedBy")
   notifications      Notification[]
   activityLogs       ActivityLog[]       @relation("ActivityActor")
+  refreshTokens      RefreshToken[]
 
   @@index([status])
   @@map("users")
@@ -542,4 +544,20 @@ model ActivityLog {
   @@index([entityType, entityId, occurredAt])
   @@index([action, occurredAt])
   @@map("activity_logs")
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
+  tokenHash String    @unique @db.VarChar(64)
+  familyId  String    @db.Uuid
+  expiresAt DateTime  @db.Timestamptz(6)
+  revokedAt DateTime? @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @db.Timestamptz(6)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+  @@index([familyId])
+  @@map("refresh_tokens")
 }
