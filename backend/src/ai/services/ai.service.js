@@ -36,29 +36,43 @@ export const aiService = {
     const queryStart = Date.now()
     let contextData = ''
     
+    let repositoryMethodCalled = ''
     switch (intent) {
       case IntentTypes.ASSET_SEARCH:
+        repositoryMethodCalled = 'assetService.list'
         contextData = await assetContextProvider.getContext(user)
         break
       case IntentTypes.BOOKING_SEARCH:
+        repositoryMethodCalled = 'bookingService.listBookings'
         contextData = await bookingContextProvider.getContext(user)
         break
       case IntentTypes.MAINTENANCE_SEARCH:
+        repositoryMethodCalled = 'maintenanceService.listMaintenanceRequests'
         contextData = await maintenanceContextProvider.getContext(user)
         break
       case IntentTypes.DASHBOARD_SUMMARY:
+        repositoryMethodCalled = 'analyticsRepository.getDashboardData'
         contextData = await dashboardContextProvider.getContext()
         break
       case IntentTypes.CATEGORY_SEARCH:
+        repositoryMethodCalled = 'assetCategoryService.list'
         contextData = await categoryContextProvider.getContext(user)
         break
       default:
+        repositoryMethodCalled = 'none'
         contextData = 'No specific database context provided for this general inquiry.'
     }
     const queryDuration = Date.now() - queryStart
     
     // Count records returned simply by counting lines that start with `- `
     const recordsReturned = (contextData.match(/^- /gm) || []).length
+
+    console.log('\n--- AI TRACE LOG ---')
+    console.log(`Intent Detected: ${intent}`)
+    console.log(`Repository Method Called: ${repositoryMethodCalled}`)
+    console.log(`Number of Records Returned: ${recordsReturned}`)
+    console.log(`Final Database Context sent to Bedrock:\n${contextData}`)
+    console.log('--------------------\n')
 
     // 4. Call Bedrock
     const response = await provider.chat({ 

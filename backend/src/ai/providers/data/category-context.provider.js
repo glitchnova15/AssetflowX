@@ -1,8 +1,8 @@
-import { assetCategoryRepository } from '../../../repositories/asset-category.repository.js'
+import { assetCategoryService } from '../../../services/asset-category.service.js'
 
 export const categoryContextProvider = {
   async getContext(user, limit = process.env.AI_MAX_CONTEXT_RECORDS || 25) {
-    const [categories, count] = await assetCategoryRepository.findPage({ where: {}, skip: 0, take: Number(limit) })
+    const { data: categories } = await assetCategoryService.list({ page: 1, pageSize: Number(limit), sortBy: 'name', sortOrder: 'asc' })
 
     if (categories.length === 0) return 'No asset categories found.'
 

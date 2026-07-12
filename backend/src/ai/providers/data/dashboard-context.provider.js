@@ -2,15 +2,16 @@ import { analyticsRepository } from '../../../repositories/analytics.repository.
 
 export const dashboardContextProvider = {
   async getContext() {
-    const kpis = await analyticsRepository.getKPIs()
+    const data = await analyticsRepository.getDashboardData()
+    const overview = data.overview
     
     let context = 'Dashboard Summary:\n'
-    context += `- Total Assets: ${kpis.totalAssets}\n`
-    context += `- Active Assets: ${kpis.activeAssets}\n`
-    context += `- Assets Under Maintenance: ${kpis.assetsUnderMaintenance}\n`
-    context += `- Active Bookings: ${kpis.activeBookings}\n`
-    context += `- Pending Bookings: ${kpis.pendingBookings}\n`
-    context += `- Maintenance Requests: ${kpis.maintenanceRequests}\n`
+    context += `- Total Assets: ${overview.totalAssets}\n`
+    context += `- Active Assets: ${overview.activeAssets}\n`
+    context += `- Assets Under Maintenance: ${overview.maintenanceAssets}\n`
+    context += `- Active Bookings: ${overview.activeBookings}\n`
+    context += `- Pending Bookings: ${overview.pendingBookings}\n`
+    context += `- Maintenance Requests: ${overview.maintenanceRequests}\n`
     
     return context
   }

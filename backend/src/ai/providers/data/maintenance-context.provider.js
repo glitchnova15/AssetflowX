@@ -1,15 +1,10 @@
-import { maintenanceRepository } from '../../../repositories/maintenance.repository.js'
+import { maintenanceService } from '../../../services/maintenance.service.js'
 
 export const maintenanceContextProvider = {
   async getContext(user, limit = process.env.AI_MAX_CONTEXT_RECORDS || 25) {
     let filters = { page: 1, pageSize: Number(limit) }
     
-    const isAdminOrManager = user.roles && (user.roles.includes('ADMIN') || user.roles.includes('ASSET_MANAGER'))
-    if (!isAdminOrManager) {
-      filters.reportedById = user.id
-    }
-
-    const { data: records } = await maintenanceRepository.findAll(filters)
+    const { data: records } = await maintenanceService.listMaintenanceRequests(filters, user)
 
     if (records.length === 0) return 'No maintenance records found.'
 

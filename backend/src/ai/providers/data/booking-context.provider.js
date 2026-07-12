@@ -1,15 +1,10 @@
-import { bookingRepository } from '../../../repositories/booking.repository.js'
+import { bookingService } from '../../../services/booking.service.js'
 
 export const bookingContextProvider = {
   async getContext(user, limit = process.env.AI_MAX_CONTEXT_RECORDS || 25) {
     let filters = { page: 1, pageSize: Number(limit) }
     
-    const isAdminOrManager = user.roles && (user.roles.includes('ADMIN') || user.roles.includes('ASSET_MANAGER'))
-    if (!isAdminOrManager) {
-      filters.userId = user.id
-    }
-
-    const { data: bookings } = await bookingRepository.findAll(filters)
+    const { data: bookings } = await bookingService.listBookings(filters, user)
 
     if (bookings.length === 0) return 'No bookings found.'
 

@@ -20,7 +20,7 @@ export const analyticsRepository = {
     ] = await prisma.$transaction([
       prisma.asset.count(),
       prisma.asset.count({ where: { lifecycleStatus: 'ALLOCATED' } }),
-      prisma.asset.count({ where: { lifecycleStatus: 'MAINTENANCE' } }),
+      prisma.asset.count({ where: { lifecycleStatus: 'IN_MAINTENANCE' } }),
       prisma.resourceBooking.count({ where: { status: 'PENDING' } }),
       prisma.resourceBooking.count({ where: { status: 'CHECKED_OUT' } }),
       prisma.maintenanceRequest.count({ where: { status: { in: ['OPEN', 'IN_PROGRESS'] } } }),

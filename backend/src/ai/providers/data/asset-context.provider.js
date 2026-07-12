@@ -1,15 +1,16 @@
-import { assetRepository } from '../../../repositories/asset.repository.js'
+import { assetService } from '../../../services/asset.service.js'
 
 export const assetContextProvider = {
   async getContext(user, limit = process.env.AI_MAX_CONTEXT_RECORDS || 25) {
-    let where = {}
-    
-    const isAdminOrManager = user.roles && (user.roles.includes('ADMIN') || user.roles.includes('ASSET_MANAGER'))
-    if (!isAdminOrManager) {
-      where.assignedToId = user.id
+    let query = {
+      page: 1,
+      pageSize: Number(limit),
+      sortBy: 'createdAt',
+      sortOrder: 'desc'
     }
-
-    const [assets, count] = await assetRepository.findPage({ where, skip: 0, take: Number(limit) })
+    
+    console.log(`[Asset Context] Calling assetService.list with query:`, query)
+    const { data: assets } = await assetService.list(query)
 
     if (assets.length === 0) return 'No assets found.'
 
