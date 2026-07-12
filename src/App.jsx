@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './supabase'
-import Login from './Pages/Login'
+import Login from './pages/Login'
 
 export default function App() {
   const [session, setSession] = useState(null)
