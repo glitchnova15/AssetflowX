@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Outlet, NavLink } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth.js'
+import { AiChatWidget } from '../components/ai/AiChatWidget.jsx'
 
 const navItems = [
   {
@@ -183,6 +184,9 @@ export default function DashboardLayout() {
           <Outlet />
         </main>
       </div>
+
+      {/* Global AI Chat Widget */}
+      <AiChatWidget />
     </div>
   )
 }

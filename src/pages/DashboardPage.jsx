@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { analyticsApi } from '../api/analytics.api.js'
-import { useAuth } from '../contexts/AuthContext.jsx'
+import { useAuth } from '../hooks/useAuth.js'
 import KpiCard from '../components/analytics/KpiCard.jsx'
 import StatusPieChart from '../components/analytics/StatusPieChart.jsx'
 import ConditionBarChart from '../components/analytics/ConditionBarChart.jsx'

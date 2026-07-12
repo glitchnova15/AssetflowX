@@ -7,6 +7,7 @@ import { assetRouter, assetCategoryRouter } from './routes/asset.routes.js'
 import { bookingRouter } from './routes/booking.routes.js'
 import { maintenanceRouter } from './routes/maintenance.routes.js'
 import { analyticsRouter } from './routes/analytics.routes.js'
+import { aiRouter } from './ai/routes/ai.routes.js'
 
 export const app = express()
 
@@ -19,5 +20,6 @@ app.use('/api/v1/asset-categories', assetCategoryRouter)
 app.use('/api/v1/bookings', bookingRouter)
 app.use('/api/v1/maintenance', maintenanceRouter)
 app.use('/api/v1/analytics', analyticsRouter)
+app.use('/api/v1/ai', aiRouter)
 app.use(notFound)
 app.use(errorHandler)
