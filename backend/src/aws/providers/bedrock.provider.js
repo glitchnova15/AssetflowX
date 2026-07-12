@@ -38,21 +38,15 @@ export class BedrockProvider {
     }
   }
 
-  async chat(messages, context) {
+  async chat({ systemPrompt, context, userMessage }) {
     if (awsConfig.useLocal) return '[LOCAL MOCK] Bedrock chat mock response'
     try {
-      let formattedMessages = messages
-      if (!Array.isArray(messages)) {
-         formattedMessages = [{role: 'user', content: String(messages)}]
-      }
+      const finalSystem = systemPrompt + (context ? `\n\nDatabase Context:\n${context}` : '')
       
       const command = new ConverseCommand({
         modelId: this.modelId,
-        system: context ? [{ text: `Context: ${JSON.stringify(context)}` }] : undefined,
-        messages: formattedMessages.map(m => ({
-          role: m.role === 'assistant' ? 'assistant' : 'user',
-          content: [{ text: m.content }]
-        }))
+        system: [{ text: finalSystem }],
+        messages: [{ role: 'user', content: [{ text: userMessage }] }]
       })
       
       let retries = 3
@@ -60,7 +54,10 @@ export class BedrockProvider {
       let response
       while (retries > 0) {
         try {
+          const start = Date.now()
           response = await this.client.send(command)
+          const latency = Date.now() - start
+          response._latency = latency // attach latency for orchestrator logging
           break
         } catch (err) {
           retries--
@@ -70,7 +67,7 @@ export class BedrockProvider {
         }
       }
 
-      return response.output.message.content[0].text
+      return { text: response.output.message.content[0].text, latency: response._latency || 0 }
     } catch (error) {
       throw new AppError('Failed to interact with Bedrock: ' + error.message, 500, 'AI_PROVIDER_ERROR')
     }
