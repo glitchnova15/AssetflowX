@@ -29,9 +29,9 @@ export const analyticsRepository = {
       prisma.asset.groupBy({ by: ['condition'], _count: true }),
       prisma.asset.groupBy({ by: ['categoryId'], _count: true }),
       prisma.resourceBooking.groupBy({ by: ['status'], _count: true }),
-      prisma.asset.findMany({ orderBy: { acquiredAt: 'desc' }, take: 5 }),
-      prisma.maintenanceRequest.findMany({ orderBy: { openedAt: 'desc' }, take: 5 }),
-      prisma.resourceBooking.findMany({ orderBy: { startsAt: 'desc' }, take: 5 })
+      prisma.asset.findMany({ orderBy: { acquiredAt: 'desc' }, take: 10 }),
+      prisma.maintenanceRequest.findMany({ orderBy: { openedAt: 'desc' }, take: 10 }),
+      prisma.resourceBooking.findMany({ orderBy: { startsAt: 'desc' }, take: 10 })
     ])
 
     let utilizationPercentage = 0;
