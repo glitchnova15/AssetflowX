@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import { hashPassword } from '../utils/password.js'
 
 const prisma = new PrismaClient()
 
@@ -48,9 +49,13 @@ async function main() {
     departmentHead: await prisma.role.upsert({ where: { code: 'DEPARTMENT_HEAD' }, update: { name: 'Department Head', description: 'Department approver' }, create: { id: ids.departmentHeadRole, code: 'DEPARTMENT_HEAD', name: 'Department Head', description: 'Department approver' } }),
   }
 
-  await upsertById(prisma.user, { id: ids.adminUser, authSubject: 'demo-admin', email: 'admin@assetflow.demo', displayName: 'Avery Admin', status: 'ACTIVE' })
-  await upsertById(prisma.user, { id: ids.employeeUser, authSubject: 'demo-employee', email: 'alex@assetflow.demo', displayName: 'Alex Employee', status: 'ACTIVE' })
-  await upsertById(prisma.user, { id: ids.auditorUser, authSubject: 'demo-auditor', email: 'aria@assetflow.demo', displayName: 'Aria Auditor', status: 'ACTIVE' })
+  const adminHash = await hashPassword('Admin@123456')
+  const employeeHash = await hashPassword('Employee@123')
+  const managerHash = await hashPassword('Manager@1234')
+
+  await upsertById(prisma.user, { id: ids.adminUser, authSubject: 'demo-admin', email: 'admin@assetflow.demo', displayName: 'Avery Admin', status: 'ACTIVE', passwordHash: adminHash })
+  await upsertById(prisma.user, { id: ids.employeeUser, authSubject: 'demo-employee', email: 'employee@assetflow.demo', displayName: 'Alex Employee', status: 'ACTIVE', passwordHash: employeeHash })
+  await upsertById(prisma.user, { id: ids.auditorUser, authSubject: 'demo-manager', email: 'manager@assetflow.demo', displayName: 'Aria Manager', status: 'ACTIVE', passwordHash: managerHash })
 
   await upsertById(prisma.department, { id: ids.itDepartment, code: 'IT', name: 'Information Technology', description: 'Technology operations', parentId: null, managerId: null })
   await upsertById(prisma.department, { id: ids.engineeringDepartment, code: 'ENG', name: 'Engineering', description: 'Product engineering', parentId: null, managerId: null })

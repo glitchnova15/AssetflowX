@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import ProtectedRoute from '../components/ProtectedRoute.jsx'
 import DashboardLayout from '../layouts/DashboardLayout.jsx'
+import DashboardPage from '../pages/DashboardPage.jsx'
 import Login from '../pages/Login.jsx'
 import AssetListPage from '../pages/assets/AssetListPage.jsx'
 import AssetDetailPage from '../pages/assets/AssetDetailPage.jsx'
@@ -20,7 +21,7 @@ export default function AppRouter() {
       <Route path="/login" element={<Login />} />
       <Route element={<ProtectedRoute />}>
         <Route element={<DashboardLayout />}>
-          <Route index element={<Navigate to="/assets" replace />} />
+          <Route index element={<DashboardPage />} />
           <Route path="/assets" element={<AssetListPage />} />
           <Route path="/assets/new" element={<AssetFormPage />} />
           <Route path="/assets/:assetId" element={<AssetDetailPage />} />
