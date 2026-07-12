@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { supabase } from './lib/supabase'
+import { supabase } from './supabase'
 import Login from './pages/Login'
 
 export default function App() {
