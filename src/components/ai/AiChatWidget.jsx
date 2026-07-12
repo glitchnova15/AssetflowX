@@ -38,7 +38,7 @@ export function AiChatWidget() {
     try {
       const response = await aiApi.chat([...messages, userMessage])
       
-      const assistantContent = response?.answer || response?.message || response?.data?.message || "I've processed your request."
+      const assistantContent = response?.answer || response?.message || (typeof response?.data === 'string' ? response.data : response?.data?.message) || "I could not process your request at this time."
       
       const assistantMessage = { 
         role: 'assistant', 
