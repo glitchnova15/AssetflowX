@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { supabase } from '../lib/supabase'
+import { supabase } from '../supabase'
 
 export default function Login({ onLogin }) {
   const [loading, setLoading] = useState(false)
