@@ -3,4 +3,6 @@ dist/
 .env.local
 .env.*.local
 backend/.env
+backend/uploads/
 !.env.example
+.DS_Store

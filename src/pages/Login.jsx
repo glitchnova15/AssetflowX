@@ -1,52 +1,32 @@
 import { useState } from 'react'
-import { supabase } from '../supabase'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../hooks/useAuth.js'
 
-export default function Login({ onLogin }) {
+export default function Login() {
+  const { login, register } = useAuth()
+  const navigate = useNavigate()
+
   const [loading, setLoading] = useState(false)
   const [isSignUp, setIsSignUp] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [fullName, setFullName] = useState('')
+  const [displayName, setDisplayName] = useState('')
+  const [error, setError] = useState('')
 
   const handleAuth = async (e) => {
     e.preventDefault()
     setLoading(true)
-    
+    setError('')
+
     try {
       if (isSignUp) {
-        // Step 1: Create the user in Supabase Auth
-        const { data: authData, error: authError } = await supabase.auth.signUp({
-          email,
-          password,
-        })
-        if (authError) throw authError
-
-        // Step 2: Create their profile in our custom Employee table
-        if (authData.user) {
-          const { error: profileError } = await supabase
-            .from('employees')
-            .insert([
-              {
-                id: authData.user.id, // Links to Supabase Auth UUID
-                full_name: fullName,
-                role: 'ADMIN', // Hackathon trick: Make your first user an Admin instantly
-              }
-            ])
-          if (profileError) throw profileError
-          alert('Registration successful! You can now log in.')
-          setIsSignUp(false) // Switch back to login view
-        }
+        await register({ email, password, displayName })
       } else {
-        // Handle Login
-        const { data, error } = await supabase.auth.signInWithPassword({ 
-          email, 
-          password 
-        })
-        if (error) throw error
-        onLogin(data.session)
+        await login(email, password)
       }
-    } catch (error) {
-      alert(error.message)
+      navigate('/assets', { replace: true })
+    } catch (err) {
+      setError(err.message || 'Authentication failed. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -56,9 +36,16 @@ export default function Login({ onLogin }) {
     <div className="min-h-screen bg-paper flex items-center justify-center p-4 font-body text-ink">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md border border-paper-300">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-display font-bold text-stamp mb-2">AssetFlow</h1>
+          <div className="h-1 w-12 bg-signal rounded-full mx-auto mb-4" />
+          <h1 className="text-4xl font-display font-bold text-stamp mb-2">AssetFlowX</h1>
           <p className="text-ink-500">Enterprise Resource Management</p>
         </div>
+
+        {error && (
+          <div className="mb-4 p-3 bg-stamp/10 border border-stamp/20 text-stamp text-sm rounded-lg">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleAuth} className="space-y-4">
           {isSignUp && (
@@ -67,21 +54,23 @@ export default function Login({ onLogin }) {
               <input
                 type="text"
                 required
-                className="w-full p-2 border border-paper-300 rounded focus:outline-none focus:border-signal"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+                className="w-full p-2.5 border border-paper-300 rounded-lg focus:outline-none focus:border-signal focus:ring-1 focus:ring-signal transition-colors"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                placeholder="Enter your full name"
               />
             </div>
           )}
-          
+
           <div>
             <label className="block text-sm font-bold mb-1">Email</label>
             <input
               type="email"
               required
-              className="w-full p-2 border border-paper-300 rounded focus:outline-none focus:border-signal"
+              className="w-full p-2.5 border border-paper-300 rounded-lg focus:outline-none focus:border-signal focus:ring-1 focus:ring-signal transition-colors"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@company.com"
             />
           </div>
 
@@ -90,26 +79,28 @@ export default function Login({ onLogin }) {
             <input
               type="password"
               required
-              className="w-full p-2 border border-paper-300 rounded focus:outline-none focus:border-signal"
+              minLength={12}
+              className="w-full p-2.5 border border-paper-300 rounded-lg focus:outline-none focus:border-signal focus:ring-1 focus:ring-signal transition-colors"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="Minimum 12 characters"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-signal hover:bg-signal-700 text-white font-bold py-2 px-4 rounded transition-colors"
+            className="w-full bg-signal hover:bg-signal-700 disabled:opacity-50 text-white font-bold py-2.5 px-4 rounded-lg transition-colors"
           >
-            {loading ? 'Processing...' : (isSignUp ? 'Register Account' : 'Sign In')}
+            {loading ? 'Processing...' : isSignUp ? 'Create Account' : 'Sign In'}
           </button>
         </form>
 
         <div className="mt-4 text-center">
           <button
             type="button"
-            className="text-sm text-stamp hover:text-stamp-700 font-bold"
-            onClick={() => setIsSignUp(!isSignUp)}
+            className="text-sm text-stamp hover:text-stamp-700 font-bold transition-colors"
+            onClick={() => { setIsSignUp(!isSignUp); setError('') }}
           >
             {isSignUp ? 'Already have an account? Sign in' : 'Need an account? Register'}
           </button>

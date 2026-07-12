@@ -1,0 +1,8 @@
+export const ROLES = Object.freeze({
+  ADMIN: 'ADMIN',
+  ASSET_MANAGER: 'ASSET_MANAGER',
+  DEPARTMENT_HEAD: 'DEPARTMENT_HEAD',
+  EMPLOYEE: 'EMPLOYEE',
+})
+
+export const ASSET_WRITE_ROLES = Object.freeze([ROLES.ADMIN, ROLES.ASSET_MANAGER])
