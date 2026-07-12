@@ -10,6 +10,9 @@ import CategoryFormPage from '../pages/categories/CategoryFormPage.jsx'
 import BookingListPage from '../pages/bookings/BookingListPage.jsx'
 import BookingFormPage from '../pages/bookings/BookingFormPage.jsx'
 import BookingDetailPage from '../pages/bookings/BookingDetailPage.jsx'
+import MaintenanceListPage from '../pages/maintenance/MaintenanceListPage.jsx'
+import MaintenanceFormPage from '../pages/maintenance/MaintenanceFormPage.jsx'
+import MaintenanceDetailPage from '../pages/maintenance/MaintenanceDetailPage.jsx'
 
 export default function AppRouter() {
   return (
@@ -28,6 +31,9 @@ export default function AppRouter() {
           <Route path="/bookings" element={<BookingListPage />} />
           <Route path="/bookings/new" element={<BookingFormPage />} />
           <Route path="/bookings/:bookingId" element={<BookingDetailPage />} />
+          <Route path="/maintenance" element={<MaintenanceListPage />} />
+          <Route path="/maintenance/new" element={<MaintenanceFormPage />} />
+          <Route path="/maintenance/:maintenanceId" element={<MaintenanceDetailPage />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/assets" replace />} />
