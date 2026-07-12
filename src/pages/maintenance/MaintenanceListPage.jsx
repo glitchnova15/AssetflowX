@@ -53,8 +53,17 @@ export default function MaintenanceListPage() {
         sortBy: 'createdAt',
         sortOrder: 'desc',
       })
-      setMaintenanceItems(result.data)
-      setPagination(result.pagination)
+      setMaintenanceItems(result.data || [])
+      if (result.pagination) {
+        setPagination(result.pagination)
+      } else {
+        setPagination({
+          page: currentPage,
+          pageSize: 20,
+          total: result.total || 0,
+          totalPages: Math.ceil((result.total || 0) / 20)
+        })
+      }
     } catch (err) {
       setError(err.message || 'Failed to load maintenance tickets')
     } finally {
@@ -78,8 +87,8 @@ export default function MaintenanceListPage() {
     setSearchParams(params)
   }
 
-  const startIndex = (pagination.page - 1) * pagination.pageSize + 1
-  const endIndex = Math.min(pagination.page * pagination.pageSize, pagination.total)
+  const startIndex = pagination ? (pagination.page - 1) * pagination.pageSize + 1 : 1
+  const endIndex = pagination ? Math.min(pagination.page * pagination.pageSize, pagination.total) : 0
 
   return (
     <div>
@@ -210,7 +219,7 @@ export default function MaintenanceListPage() {
         </div>
 
         {/* Pagination */}
-        {!loading && pagination.total > 0 && (
+        {!loading && pagination && pagination.total > 0 && (
           <div className="flex items-center justify-between px-4 py-3 border-t border-paper-300">
             <p className="text-sm text-ink-500">
               Showing <span className="font-medium text-ink">{startIndex}</span>–<span className="font-medium text-ink">{endIndex}</span> of{' '}
