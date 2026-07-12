@@ -1,4 +1,4 @@
-import { BedrockRuntimeClient, InvokeModelCommand } from '@aws-sdk/client-bedrock-runtime'
+import { BedrockRuntimeClient, ConverseCommand } from '@aws-sdk/client-bedrock-runtime'
 import { AppError } from '../../utils/app-error.js'
 import { awsConfig } from '../config/aws.config.js'
 
@@ -11,17 +11,10 @@ export class BedrockProvider {
   async _invoke(promptSystem, promptUser) {
     if (awsConfig.useLocal) return '[LOCAL MOCK] Bedrock invoke mock response'
     try {
-      const payload = {
-        anthropic_version: 'bedrock-2023-05-31',
-        max_tokens: 1024,
-        system: promptSystem,
-        messages: [{ role: 'user', content: promptUser }],
-      }
-      const command = new InvokeModelCommand({
+      const command = new ConverseCommand({
         modelId: this.modelId,
-        contentType: 'application/json',
-        accept: 'application/json',
-        body: JSON.stringify(payload),
+        system: [{ text: promptSystem }],
+        messages: [{ role: 'user', content: [{ text: promptUser }] }],
       })
       
       let retries = 3
@@ -39,8 +32,7 @@ export class BedrockProvider {
         }
       }
       
-      const responseBody = JSON.parse(new TextDecoder().decode(response.body))
-      return responseBody.content[0].text
+      return response.output.message.content[0].text
     } catch (error) {
       throw new AppError('Failed to interact with Bedrock: ' + error.message, 500, 'AI_PROVIDER_ERROR')
     }
@@ -54,20 +46,13 @@ export class BedrockProvider {
          formattedMessages = [{role: 'user', content: String(messages)}]
       }
       
-      const payload = {
-        anthropic_version: 'bedrock-2023-05-31',
-        max_tokens: 1024,
-        system: context ? `Context: ${JSON.stringify(context)}` : '',
+      const command = new ConverseCommand({
+        modelId: this.modelId,
+        system: context ? [{ text: `Context: ${JSON.stringify(context)}` }] : undefined,
         messages: formattedMessages.map(m => ({
           role: m.role === 'assistant' ? 'assistant' : 'user',
-          content: m.content
-        })),
-      }
-      const command = new InvokeModelCommand({
-        modelId: this.modelId,
-        contentType: 'application/json',
-        accept: 'application/json',
-        body: JSON.stringify(payload),
+          content: [{ text: m.content }]
+        }))
       })
       
       let retries = 3
@@ -85,8 +70,7 @@ export class BedrockProvider {
         }
       }
 
-      const responseBody = JSON.parse(new TextDecoder().decode(response.body))
-      return responseBody.content[0].text
+      return response.output.message.content[0].text
     } catch (error) {
       throw new AppError('Failed to interact with Bedrock: ' + error.message, 500, 'AI_PROVIDER_ERROR')
     }
