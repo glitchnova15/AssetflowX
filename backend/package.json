@@ -1,0 +1,21 @@
+{
+  "name": "assetflow-backend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "db:generate": "prisma generate --schema src/prisma/schema.prisma",
+    "db:migrate": "prisma migrate dev --schema src/prisma/schema.prisma",
+    "db:deploy": "prisma migrate deploy --schema src/prisma/schema.prisma",
+    "db:seed": "prisma db seed --schema src/prisma/schema.prisma"
+  },
+  "prisma": {
+    "seed": "node src/prisma/seed.js"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.0.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.0.0"
+  }
+}
