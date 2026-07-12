@@ -1,5 +1,6 @@
 import { AppError } from '../utils/app-error.js'
 import { assetRepository } from '../repositories/asset.repository.js'
+import { emailService } from '../aws/services/email.service.js'
 
 const pagination = ({ page, pageSize }, total) => ({
   page,
@@ -47,8 +48,14 @@ export const assetService = {
   },
 
   async update(id, data) {
-    await this.getById(id)
-    return assetRepository.update(id, cleanAssetData(data))
+    const asset = await this.getById(id)
+    const updatedAsset = await assetRepository.update(id, cleanAssetData(data))
+
+    if (data.custodianId && data.custodianId !== asset.custodianId) {
+      await emailService.sendAssetAssigned(updatedAsset.name, updatedAsset.assetTag)
+    }
+
+    return updatedAsset
   },
 
   async remove(id) {

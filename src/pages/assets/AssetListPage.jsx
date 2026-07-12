@@ -86,7 +86,7 @@ export default function AssetListPage() {
     <div>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <h1 className="font-display text-3xl font-bold text-ink uppercase tracking-wide">Assets</h1>
+        <h1 className="font-display text-3xl font-bold text-gray-800 uppercase tracking-wide">Assets</h1>
         {canWrite && (
           <button
             onClick={() => navigate('/assets/new')}
