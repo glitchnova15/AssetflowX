@@ -1,5 +1,5 @@
 import { MockProvider } from './mock.provider.js'
-import { BedrockProvider } from './bedrock.provider.js'
+import { BedrockProvider } from '../../aws/providers/bedrock.provider.js'
 import { OpenAIProvider } from './openai.provider.js'
 
 export const getAiProvider = () => {

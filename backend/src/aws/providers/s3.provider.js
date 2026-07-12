@@ -28,5 +28,5 @@ export const generatePresignedUrl = async (key) => {
     Bucket: awsConfig.s3BucketName,
     Key: key,
   })
-  return getSignedUrl(s3Client, command, { expiresIn: 3600 })
+  return getSignedUrl(s3Client, command, { expiresIn: 900 })
 }

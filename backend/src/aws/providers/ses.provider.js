@@ -18,5 +18,16 @@ export const sendEmail = async (to, subject, body) => {
     }
   })
 
-  return sesClient.send(command)
+  let retries = 3
+  let delay = 1000
+  while (retries > 0) {
+    try {
+      return await sesClient.send(command)
+    } catch (err) {
+      retries--
+      if (retries === 0) throw err
+      await new Promise(resolve => setTimeout(resolve, delay))
+      delay *= 2
+    }
+  }
 }

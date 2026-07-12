@@ -9,6 +9,7 @@ import { maintenanceRouter } from './routes/maintenance.routes.js'
 import { analyticsRouter } from './routes/analytics.routes.js'
 import { aiRouter } from './ai/routes/ai.routes.js'
 import { uploadRouter } from './routes/upload.routes.js'
+import { awsHealthRouter } from './routes/aws-health.routes.js'
 
 export const app = express()
 
@@ -23,5 +24,6 @@ app.use('/api/v1/maintenance', maintenanceRouter)
 app.use('/api/v1/analytics', analyticsRouter)
 app.use('/api/v1/ai', aiRouter)
 app.use('/api/v1/upload', uploadRouter)
+app.use('/api/v1/aws', awsHealthRouter)
 app.use(notFound)
 app.use(errorHandler)
