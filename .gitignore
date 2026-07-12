@@ -1,8 +1,10 @@
 node_modules/
 dist/
+.env
 .env.local
 .env.*.local
 backend/.env
+backend/.env.*
 backend/uploads/
 !.env.example
 .DS_Store
