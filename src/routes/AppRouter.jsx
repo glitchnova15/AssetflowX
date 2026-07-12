@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import ProtectedRoute from '../components/ProtectedRoute.jsx'
 import DashboardLayout from '../layouts/DashboardLayout.jsx'
 import DashboardPage from '../pages/DashboardPage.jsx'
+import ReportsPage from '../pages/ReportsPage.jsx'
 import Login from '../pages/Login.jsx'
 import AssetListPage from '../pages/assets/AssetListPage.jsx'
 import AssetDetailPage from '../pages/assets/AssetDetailPage.jsx'
@@ -35,6 +36,7 @@ export default function AppRouter() {
           <Route path="/maintenance" element={<MaintenanceListPage />} />
           <Route path="/maintenance/new" element={<MaintenanceFormPage />} />
           <Route path="/maintenance/:maintenanceId" element={<MaintenanceDetailPage />} />
+          <Route path="/reports" element={<ReportsPage />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
