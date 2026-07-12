@@ -1,4 +1,5 @@
 import { maintenanceRepository } from '../repositories/maintenance.repository.js'
+import { emailService } from '../aws/services/email.service.js'
 import { AppError } from '../utils/app-error.js'
 
 export const maintenanceService = {
@@ -56,6 +57,12 @@ export const maintenanceService = {
       await maintenanceRepository.addHistory(requestId, statusForHistory, userId, notes || null)
     }
 
-    return maintenanceRepository.findById(requestId)
+    const updatedRequest = await maintenanceRepository.findById(requestId)
+
+    if (newStatus && newStatus !== request.status) {
+      await emailService.sendMaintenanceStatus(newStatus, requestId, request.title)
+    }
+
+    return updatedRequest
   }
 }

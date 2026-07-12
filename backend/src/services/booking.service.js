@@ -90,11 +90,8 @@ export const bookingService = {
 
     const updatedBooking = await bookingRepository.updateStatus(bookingId, newStatus)
     
-    try {
-      const toEmail = booking.requestedBy?.email || 'user@example.com'
-      await emailService.sendBookingStatus(toEmail, newStatus, bookingId)
-    } catch (error) {
-      console.error('Failed to send booking status email:', error)
+    if (['APPROVED', 'REJECTED', 'CANCELLED'].includes(newStatus)) {
+      await emailService.sendBookingStatus(newStatus, bookingId, booking.asset?.name)
     }
 
     return updatedBooking
