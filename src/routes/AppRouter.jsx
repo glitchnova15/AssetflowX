@@ -37,7 +37,7 @@ export default function AppRouter() {
           <Route path="/maintenance/:maintenanceId" element={<MaintenanceDetailPage />} />
         </Route>
       </Route>
-      <Route path="*" element={<Navigate to="/assets" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
 }
