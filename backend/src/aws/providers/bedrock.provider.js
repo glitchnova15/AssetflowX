@@ -5,7 +5,7 @@ import { awsConfig } from '../config/aws.config.js'
 export class BedrockProvider {
   constructor() {
     this.client = awsConfig.useLocal ? null : new BedrockRuntimeClient({ region: awsConfig.region })
-    this.modelId = 'anthropic.claude-3-haiku-20240307-v1:0'
+    this.modelId = process.env.BEDROCK_MODEL_ID || 'anthropic.claude-3-haiku-20240307-v1:0'
   }
 
   async _invoke(promptSystem, promptUser) {
