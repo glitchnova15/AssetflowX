@@ -1,13 +1,15 @@
 import { BedrockRuntimeClient, InvokeModelCommand } from '@aws-sdk/client-bedrock-runtime'
 import { AppError } from '../../utils/app-error.js'
+import { awsConfig } from '../../aws/config/aws.config.js'
 
 export class BedrockProvider {
   constructor() {
-    this.client = new BedrockRuntimeClient()
+    this.client = awsConfig.useLocal ? null : new BedrockRuntimeClient({ region: awsConfig.region })
     this.modelId = 'anthropic.claude-3-haiku-20240307-v1:0'
   }
 
   async _invoke(promptSystem, promptUser) {
+    if (awsConfig.useLocal) return '[LOCAL MOCK] Bedrock invoke mock response'
     try {
       const payload = {
         anthropic_version: 'bedrock-2023-05-31',
@@ -30,6 +32,7 @@ export class BedrockProvider {
   }
 
   async chat(messages, context) {
+    if (awsConfig.useLocal) return '[LOCAL MOCK] Bedrock chat mock response'
     try {
       let formattedMessages = messages
       if (!Array.isArray(messages)) {

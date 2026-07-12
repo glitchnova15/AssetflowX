@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { assetsApi } from '../../api/assets.api.js'
 import { categoriesApi } from '../../api/categories.api.js'
+import FileUploader from '../../components/common/FileUploader.jsx'
 
 const STATUS_OPTIONS = ['AVAILABLE', 'ALLOCATED', 'RESERVED', 'IN_MAINTENANCE', 'RETIRED', 'LOST', 'DISPOSED']
 const CONDITION_OPTIONS = ['NEW', 'GOOD', 'FAIR', 'POOR', 'DAMAGED']
@@ -30,6 +31,7 @@ export default function AssetFormPage() {
     purchaseCost: '',
     acquiredDate: '',
     warrantyExpiryDate: '',
+    imageUrl: '',
   })
 
   useEffect(() => {
@@ -53,6 +55,7 @@ export default function AssetFormPage() {
             purchaseCost: asset.purchaseCost || '',
             acquiredDate: asset.acquiredDate ? asset.acquiredDate.split('T')[0] : '',
             warrantyExpiryDate: asset.warrantyExpiryDate ? asset.warrantyExpiryDate.split('T')[0] : '',
+            imageUrl: asset.imageUrl || '',
           })
         }
       } catch (err) {
@@ -166,6 +169,15 @@ export default function AssetFormPage() {
                 placeholder="Additional details..."
                 className="w-full px-4 py-2.5 bg-paper-100 border border-paper-300 rounded-lg focus:outline-none focus:border-signal focus:ring-1 focus:ring-signal transition-colors resize-none"
               />
+            </div>
+            <div className="md:col-span-2">
+              <FileUploader 
+                onUploadComplete={(url) => setFormData(prev => ({ ...prev, imageUrl: url }))} 
+                label="Asset Image"
+              />
+              {formData.imageUrl && (
+                <div className="mt-2 text-sm text-signal font-medium">Image uploaded successfully!</div>
+              )}
             </div>
           </div>
         </div>

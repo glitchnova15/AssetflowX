@@ -8,6 +8,7 @@ import { bookingRouter } from './routes/booking.routes.js'
 import { maintenanceRouter } from './routes/maintenance.routes.js'
 import { analyticsRouter } from './routes/analytics.routes.js'
 import { aiRouter } from './ai/routes/ai.routes.js'
+import { uploadRouter } from './routes/upload.routes.js'
 
 export const app = express()
 
@@ -21,5 +22,6 @@ app.use('/api/v1/bookings', bookingRouter)
 app.use('/api/v1/maintenance', maintenanceRouter)
 app.use('/api/v1/analytics', analyticsRouter)
 app.use('/api/v1/ai', aiRouter)
+app.use('/api/v1/upload', uploadRouter)
 app.use(notFound)
 app.use(errorHandler)

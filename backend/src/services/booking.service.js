@@ -1,6 +1,7 @@
 import { AppError } from '../utils/app-error.js'
 import { bookingRepository } from '../repositories/booking.repository.js'
 import { ROLES } from '../constants/roles.js'
+import { emailService } from '../aws/services/email.service.js'
 
 export const bookingService = {
   createBooking: async (data, userId) => {
@@ -87,6 +88,15 @@ export const bookingService = {
       }
     }
 
-    return bookingRepository.updateStatus(bookingId, newStatus)
+    const updatedBooking = await bookingRepository.updateStatus(bookingId, newStatus)
+    
+    try {
+      const toEmail = booking.requestedBy?.email || 'user@example.com'
+      await emailService.sendBookingStatus(toEmail, newStatus, bookingId)
+    } catch (error) {
+      console.error('Failed to send booking status email:', error)
+    }
+
+    return updatedBooking
   }
 }
